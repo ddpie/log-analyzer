@@ -1,0 +1,13 @@
+# 日志分析助手依赖包
+strands-agents>=0.1.0
+strands-agents-tools>=0.1.0
+
+# MCP 支持
+mcp>=1.0.0
+
+# 配置和数据处理
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# 日志和调试
+rich>=13.0.0

@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "opensearch": {
+      "command": "uvx",
+      "args": ["opensearch-mcp-server@latest"],
+      "env": {
+        "OPENSEARCH_ENDPOINT": "https://your-opensearch-domain.region.es.amazonaws.com",
+        "OPENSEARCH_USERNAME": "your-username",
+        "OPENSEARCH_PASSWORD": "your-password"
+      },
+      "disabled": false,
+      "autoApprove": ["search", "query"]
+    },
+    "elasticsearch": {
+      "command": "uvx", 
+      "args": ["elasticsearch-mcp-server@latest"],
+      "env": {
+        "ELASTICSEARCH_URL": "http://localhost:9200",
+        "ELASTICSEARCH_USERNAME": "elastic",
+        "ELASTICSEARCH_PASSWORD": "your-password"
+      },
+      "disabled": true,
+      "autoApprove": []
+    },
+    "file-system": {
+      "command": "uvx",
+      "args": ["mcp-server-filesystem@latest", "/path/to/log/files"],
+      "env": {},
+      "disabled": true,
+      "autoApprove": ["read_file", "list_directory"]
+    }
+  }
+}
