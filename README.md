@@ -26,23 +26,23 @@ response = agent("分析今天的错误日志")  # 就这么简单
 - 支持多种数据源（OpenSearch、Elasticsearch 等）
 - 命令行交互界面
 
-## 安装
+## 快速开始
+
+### 安装
 
 ```bash
+cd project
 pip install -r requirements.txt
 ```
 
-## 配置
-
-复制配置文件模板：
+### 配置
 
 ```bash
 cp mcp.json.example mcp.json
+# 编辑 mcp.json，配置数据源连接信息
 ```
 
-编辑 `mcp.json`，配置数据源连接信息。
-
-## 运行
+### 运行
 
 ```bash
 python3 main.py
@@ -75,24 +75,6 @@ project/
 ```
 
 **总计**: 约 630 行代码实现完整的日志分析工具，其中智能体核心逻辑仅 80 行。
-
-## 配置示例
-
-```json
-{
-  "mcpServers": {
-    "opensearch": {
-      "command": "uvx",
-      "args": ["opensearch-mcp-server-py"],
-      "env": {
-        "OPENSEARCH_URL": "https://your-domain.es.amazonaws.com",
-        "OPENSEARCH_USERNAME": "username",
-        "OPENSEARCH_PASSWORD": "password"
-      }
-    }
-  }
-}
-```
 
 ## SDK 开发体验
 
@@ -139,16 +121,23 @@ from strands_tools import current_time, calculator, python_repl
 agent = Agent(tools=[current_time, calculator, python_repl])
 ```
 
-## 系统要求
+## 配置示例
 
-- Python 3.8+
-- macOS / Linux / Windows
-
-## 常见问题
-
-**连接失败**: 检查 mcp.json 配置和网络
-**查询无结果**: 确认数据源中有对应数据
-**时间异常**: 程序会自动检测并提示
+```json
+{
+  "mcpServers": {
+    "opensearch": {
+      "command": "uvx",
+      "args": ["opensearch-mcp-server-py"],
+      "env": {
+        "OPENSEARCH_URL": "https://your-domain.es.amazonaws.com",
+        "OPENSEARCH_USERNAME": "username",
+        "OPENSEARCH_PASSWORD": "password"
+      }
+    }
+  }
+}
+```
 
 ## 开发效率对比
 
@@ -165,6 +154,17 @@ agent = Agent(tools=[current_time, calculator, python_repl])
 - 内置对话管理
 - 自动错误处理
 - 专注业务逻辑即可
+
+## 系统要求
+
+- Python 3.8+
+- macOS / Linux / Windows
+
+## 常见问题
+
+**连接失败**: 检查 mcp.json 配置和网络  
+**查询无结果**: 确认数据源中有对应数据  
+**时间异常**: 程序会自动检测并提示
 
 ## 依赖
 
