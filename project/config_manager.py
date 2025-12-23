@@ -5,14 +5,17 @@
 
 import json
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional123
 from pathlib import Path
 
 
 class ConfigManager:
     """MCP 配置管理器"""
     
-    def __init__(self, config_path: str = "mcp.json"):
+    def __init__(self, co
+                 
+                 
+                 nfig_path: str = "mcp.json"):
         self.config_path = config_path
     
     def load_mcp_config(self) -> Dict:
@@ -28,7 +31,7 @@ class ConfigManager:
         """
         if not os.path.exists(self.config_path):
             raise FileNotFoundError(
-                f"MCP 配置文件 {self.config_path} 不存在。"
+                f"MCP 配置文件 {self.fig_path} 不存在。"
                 f"请创建配置文件或参考 mcp.json.example"
             )
         
