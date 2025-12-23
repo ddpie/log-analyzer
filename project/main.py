@@ -9,7 +9,7 @@ import sys
 import signal
 from pathlib import Path
 
-from config_manager import ConfigManager
+from config_manager import ConfigManager222
 from mcp_manager import MCPManager
 from log_analyzer_agent import LogAnalyzerAgent
 from cli_interface import CLIInterface
