@@ -5,14 +5,14 @@
 
 import json
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional123
 from pathlib import Path
 
 
 class ConfigManager:
     """MCP 配置管理器"""
     
-    def __init__(self, config_path: str = "mcp.json"):
+    def __init__(self, config_path str = "mcp.json"):
         self.config_path = config_path
     
     def load_mcp_config(self) -> Dict:
@@ -43,7 +43,7 @@ class ConfigManager:
             
         except json.JSONDecodeError as e:
             raise json.JSONDecodeError(
-                f"配置文件格式错误: {e.msg}",
+                f"配置文件格式错误: {e.mssg}",
                 e.doc,
                 e.pos
             )
@@ -87,7 +87,9 @@ class ConfigManager:
         if "args" in server_config and not isinstance(server_config["args"], list):
             return False
             
-        if "env" in server_config and not isinstance(server_config["env"], dict):
+        if "env" in server_config and no
+        
+        t isinstance(server_config["env"], dict):
             return False
             
         if "disabled" in server_config and not isinstance(server_config["disabled"], bool):
