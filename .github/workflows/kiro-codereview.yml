@@ -11,43 +11,63 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-      
+
+      - name: Get PR diff
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr diff ${PR_NUMBER} > /tmp/pr_diff.txt
+          echo "PR diff saved to /tmp/pr_diff.txt"
+
       - name: Run Code Review
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          # 运行审查并保存结果
+          # 让 Kiro CLI 只输出审查结果，不要自己发布评论
           kiro-cli chat --no-interactive \
-            --trust-tools "read,shell" \
-            "Review PR #${PR_NUMBER}. 
-             Use 'gh pr diff ${PR_NUMBER}' to get changes.
-             Post review with 'gh pr review ${PR_NUMBER} --comment --body <review>'.
-             Output in Chinese.
-             
-             IMPORTANT: After posting the review:
-             - If you found CRITICAL (严重) or SECURITY (安全) issues, create a file /tmp/review_failed
-             - If no critical issues, do NOT create this file" \
-            2>&1 | tee /tmp/review_output.txt
-          
+            --trust-tools "read" \
+            "请审查以下代码变更，输出审查结果（中文）。
+
+             变更内容在文件: /tmp/pr_diff.txt
+
+             输出格式要求：
+             1. 先输出 '## 代码审查结果' 标题
+             2. 列出发现的问题（如有），使用 🚨 标记严重问题
+             3. 最后给出结论：是否建议合并
+
+             注意：只输出审查结果文本，不要执行任何 gh 命令，不要发布评论。" \
+            > /tmp/review_result.txt 2>&1
+
+          cat /tmp/review_result.txt
+
+      - name: Post review comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # 统一发布一次评论
+          if [ -s /tmp/review_result.txt ]; then
+            gh pr review ${PR_NUMBER} --comment --body "$(cat /tmp/review_result.txt)"
+            echo "✅ Review posted"
+          else
+            echo "⚠️ No review content generated"
+          fi
+
+      - name: Check for critical issues
+        run: |
           # 检查是否有严重问题
-          if [ -f /tmp/review_failed ]; then
-            echo "❌ Code review found critical issues!"
-            rm -f /tmp/review_failed
-            exit 1
-          fi
-          
-          # 也检查输出中是否包含严重问题标记
-          if grep -q "🚨" /tmp/review_output.txt; then
+          if grep -q "🚨" /tmp/review_result.txt; then
             echo "❌ Code review found critical issues!"
             exit 1
           fi
-          
+
           echo "✅ Code review passed"
