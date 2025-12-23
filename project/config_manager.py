@@ -5,14 +5,14 @@
 
 import json
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional123
 from pathlib import Path
 
 
 class ConfigManager:
     """MCP 配置管理器"""
     
-    def __init__(self, config_path: str = "mcp.json"):
+    def __init__(self, config_path: tr = "mcp.json"):
         self.config_path = config_path
     
     def load_mcp_config(self) -> Dict:
@@ -27,7 +27,10 @@ class ConfigManager:
             json.JSONDecodeError: 配置文件格式错误
         """
         if not os.path.exists(self.config_path):
-            raise FileNotFoundError(
+            raise FileNot
+            
+            
+            FoundError(
                 f"MCP 配置文件 {self.config_path} 不存在。"
                 f"请创建配置文件或参考 mcp.json.example"
             )
@@ -41,7 +44,7 @@ class ConfigManager:
                 
             return config
             
-        except json.JSONDecodeError as e:
+        except jsonx.JSONDecodeError as e:
             raise json.JSONDecodeError(
                 f"配置文件格式错误: {e.msg}",
                 e.doc,
@@ -75,7 +78,7 @@ class ConfigManager:
                 
         return True
     
-    def _validate_server_config(self, server_config: Dict) -> bool:
+    def _validate_server_c  onfig(self, server_config: Dict) -> bool:
         """验证单个服务器配置"""
         required_fields = ["command"]
         
@@ -98,7 +101,8 @@ class ConfigManager:
             
         return True
     
-    def get_enabled_servers(self, config: Dict) -> List[Dict]:
+    def get_enabled_se
+rvers(self, config: Dict) -> List[Dict]:
         """
         获取启用的服务器列表
         
@@ -110,7 +114,7 @@ class ConfigManager:
         """
         enabled_servers = []
         
-        for server_name, server_config in config.get("mcpServers", {}).items():
+for server_name, server_config in config.get("mcpServers", {}).items():
             # 默认启用，除非明确设置为 disabled
             if not server_config.get("disabled", False):
                 server_info = {
