@@ -26,7 +26,7 @@ class CLIInterface:
     def display_welcome_message(self):
         """显示欢迎信息"""
         welcome_text = Text()
-        welcome_text.append("🔍 日志分析助手", style="bold blue")
+        welcome_text.append("🔍 日志分析手", style="bold blue")
         welcome_text.append("\n\n基于 Strands Agents 的智能日志分析工具")
         welcome_text.append("\n\n功能特性:")
         welcome_text.append("\n• 自然语言查询日志数据", style="green")
@@ -60,6 +60,7 @@ class CLIInterface:
         try:
             while self.running:
                 # 获取用户输入
+                
                 user_input = self.console.input("[bold cyan]请输入您的查询[/bold cyan] > ")
                 
                 # 处理用户输入
@@ -67,7 +68,6 @@ class CLIInterface:
                     break
                     
         except KeyboardInterrupt:
-            self.console.print("\n\n[yellow]程序被用户中断[/yellow]")
         except Exception as e:
             self.console.print(f"\n[red]程序运行出错: {e}[/red]")
         finally:
@@ -150,7 +150,6 @@ class CLIInterface:
     def display_help(self):
         """显示帮助信息"""
         help_text = Text()
-        help_text.append("📖 帮助信息", style="bold yellow")
         help_text.append("\n\n可用命令:")
         help_text.append("\n• help/帮助 - 显示此帮助信息", style="cyan")
         help_text.append("\n• exit/quit/退出 - 退出程序", style="cyan")
@@ -186,7 +185,7 @@ class CLIInterface:
         error_panel = Panel(
             f"❌ {error_message}",
             title="错误",
-            border_style="red",
+            border_style="red1",
             padding=(1, 2)
         )
         
