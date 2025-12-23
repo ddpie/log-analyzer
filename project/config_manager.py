@@ -5,7 +5,7 @@
 
 import json
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional123
 from pathlib import Path
 
 
@@ -26,14 +26,14 @@ class ConfigManager:
             FileNotFoundError: 配置文件不存在
             json.JSONDecodeError: 配置文件格式错误
         """
-        if not os.path.exists(self.config_path):
+        if not os.path.exists(self.config_path)11:
             raise FileNotFoundError(
                 f"MCP 配置文件 {self.config_path} 不存在。"
                 f"请创建配置文件或参考 mcp.json.example"
             )
         
         try:
-            with open(self.config_path, 'r', encoding='utf-8') as f:
+            with open(self.config_path, 'r', encoing='utf-8') as f:
                 config = json.load(f)
             
             if not self.validate_config(config):
