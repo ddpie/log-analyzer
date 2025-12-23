@@ -31,23 +31,64 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          NO_COLOR: "1"
+          TERM: "dumb"
         run: |
-          # 让 Kiro CLI 只输出审查结果，不要自己发布评论
+          # 让 Kiro CLI 将审查结果写入文件
           kiro-cli chat --no-interactive \
-            --trust-tools "read" \
-            "请审查以下代码变更，输出审查结果（中文）。
+            --trust-tools "read,write" \
+            "请审查 /tmp/pr_diff.txt 中的代码变更，将结果写入 /tmp/review_result.txt。
 
-             变更内容在文件: /tmp/pr_diff.txt
+             ## 审查规则
 
-             输出格式要求：
-             1. 先输出 '## 代码审查结果' 标题
-             2. 列出发现的问题（如有），使用 🚨 标记严重问题
-             3. 最后给出结论：是否建议合并
+             ### 🚨 严重问题 (必须修复)
+             - 安全漏洞：SQL注入、XSS、硬编码密钥/密码、路径遍历
+             - 空指针/未定义引用：未检查 null/undefined/None
+             - 资源泄漏：未关闭文件、数据库连接、网络连接
+             - 语法错误：导致代码无法运行的错误
 
-             注意：只输出审查结果文本，不要执行任何 gh 命令，不要发布评论。" \
-            > /tmp/review_result.txt 2>&1
+             ### ⚠️ 高优先级问题
+             - 错误处理缺失：空 catch、忽略错误返回值
+             - 并发问题：竞态条件、死锁风险
+             - 内存问题：内存泄漏、缓冲区溢出
+             - 类型错误：类型不匹配、any 滥用
 
-          cat /tmp/review_result.txt
+             ### 📝 建议改进
+             - 代码风格：命名不规范、过长函数
+             - 性能问题：N+1查询、循环中的重复计算
+             - 可维护性：缺少注释、重复代码
+
+             ### 语言特定检查
+             **Python**: 裸 except、可变默认参数、未使用 with 语句
+             **Java**: 未使用 try-with-resources、字符串拼接、泛型 Exception
+             **JavaScript/TypeScript**: 缺少 await、== 代替 ===、未处理 Promise reject
+             **Go**: 忽略 error、nil 指针、goroutine 泄漏
+             **SQL**: 字符串拼接查询、缺少参数化
+
+             ## 输出格式
+
+             ## 代码审查结果
+
+             ### 发现的问题
+             🚨 **严重**: [文件:行号] 问题描述
+             ⚠️ **警告**: [文件:行号] 问题描述
+             📝 **建议**: [文件:行号] 问题描述
+
+             ### 结论
+             ✅ 建议合并 / ❌ 不建议合并 - 原因
+
+             ---
+             *由 Kiro CLI 自动审查*
+
+             重要：只写入文件，不要输出到终端，不要执行 gh 命令。"
+
+          # 检查结果文件
+          if [ -f /tmp/review_result.txt ]; then
+            cat /tmp/review_result.txt
+          else
+            echo "⚠️ 审查结果文件未生成"
+            exit 1
+          fi
 
       - name: Post review comment
         env:
