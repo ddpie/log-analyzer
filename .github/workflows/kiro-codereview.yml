@@ -24,6 +24,30 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
+          # 运行审查并保存结果
           kiro-cli chat --no-interactive \
             --trust-tools "read,shell" \
-            "Review PR #${PR_NUMBER}. Use 'gh pr diff ${PR_NUMBER}' to get changes, then 'gh pr review ${PR_NUMBER} --comment --body <review>' to post. Output in Chinese."
+            "Review PR #${PR_NUMBER}. 
+             Use 'gh pr diff ${PR_NUMBER}' to get changes.
+             Post review with 'gh pr review ${PR_NUMBER} --comment --body <review>'.
+             Output in Chinese.
+             
+             IMPORTANT: After posting the review:
+             - If you found CRITICAL (严重) or SECURITY (安全) issues, create a file /tmp/review_failed
+             - If no critical issues, do NOT create this file" \
+            2>&1 | tee /tmp/review_output.txt
+          
+          # 检查是否有严重问题
+          if [ -f /tmp/review_failed ]; then
+            echo "❌ Code review found critical issues!"
+            rm -f /tmp/review_failed
+            exit 1
+          fi
+          
+          # 也检查输出中是否包含严重问题标记
+          if grep -q "🚨" /tmp/review_output.txt; then
+            echo "❌ Code review found critical issues!"
+            exit 1
+          fi
+          
+          echo "✅ Code review passed"
